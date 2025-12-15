@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}همه محصولات | نور گلد{% endblock %}
+
+{% block content %}
+<section class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item">
+                <a href="{% url 'shop:home' %}">خانه</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                همه محصولات
+            </li>
+        </ol>
+    </nav>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h1 class="h4 mb-0">همه محصولات</h1>
+        <p class="small mb-0 text-muted">
+            تعداد محصولات: {{ products|length }}
+        </p>
+    </div>
+</section>
+
+<section>
+    <div class="row g-3 g-md-4">
+        {% for product in products %}
+            <div class="col-6 col-md-3">
+                <a href="{% url 'shop:product_detail' product.slug %}"
+                   class="text-decoration-none text-light">
+                    <div class="product-card h-100">
+                        <div class="product-image-wrapper">
+                            {% with main_image=product.images.all.0 %}
+                                {% if main_image %}
+                                    <img src="{{ main_image.image.url }}"
+                                         alt="{{ product.name }}">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/400x400?text=No+Image"
+                                         alt="{{ product.name }}">
+                                {% endif %}
+                            {% endwith %}
+                            {% if product.is_featured %}
+                                <div class="product-chip">ویژه</div>
+                            {% endif %}
+                        </div>
+                        <div class="product-body">
+                            <div class="product-category">{{ product.category.name }}</div>
+                            <div class="product-name">{{ product.name }}</div>
+                            <div class="product-meta">
+                                <span>{{ product.weight_gram }} گرم</span>
+                                {% if product.wage_tier %}
+                                    <span>اجرت: {{ product.wage_tier.name }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="product-footer d-flex justify-content-between align-items-center">
+                            <span class="product-link">مشاهده جزئیات</span>
+                            <i class="bi bi-arrow-left-short"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% empty %}
+            <p class="text-muted small">هنوز محصولی ثبت نشده است.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
