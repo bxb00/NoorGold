@@ -3,67 +3,91 @@
 {% block title %}همه محصولات | نور گلد{% endblock %}
 
 {% block content %}
-<section class="mb-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb small">
-            <li class="breadcrumb-item">
-                <a href="{% url 'shop:home' %}">خانه</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">
-                همه محصولات
-            </li>
-        </ol>
-    </nav>
-
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-        <h1 class="h4 mb-0">همه محصولات</h1>
-        <p class="small mb-0 text-muted">
-            تعداد محصولات: {{ products|length }}
-        </p>
-    </div>
-</section>
-
-<section>
-    <div class="row g-3 g-md-4">
-        {% for product in products %}
-            <div class="col-6 col-md-3">
-                <a href="{% url 'shop:product_detail' product.slug %}"
-                   class="text-decoration-none text-light">
-                    <div class="product-card h-100">
-                        <div class="product-image-wrapper">
-                            {% with main_image=product.images.all.0 %}
-                                {% if main_image %}
-                                    <img src="{{ main_image.image.url }}"
-                                         alt="{{ product.name }}">
-                                {% else %}
-                                    <img src="https://via.placeholder.com/400x400?text=No+Image"
-                                         alt="{{ product.name }}">
-                                {% endif %}
-                            {% endwith %}
-                            {% if product.is_featured %}
-                                <div class="product-chip">ویژه</div>
-                            {% endif %}
-                        </div>
-                        <div class="product-body">
-                            <div class="product-category">{{ product.category.name }}</div>
-                            <div class="product-name">{{ product.name }}</div>
-                            <div class="product-meta">
-                                <span>{{ product.weight_gram }} گرم</span>
-                                {% if product.wage_tier %}
-                                    <span>اجرت: {{ product.wage_tier.name }}</span>
+    <section class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb small">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'shop:home' %}">خانه</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    همه محصولات
+                </li>
+            </ol>
+        </nav>
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <h1 class="h4 mb-0">همه محصولات</h1>
+            <p class="small mb-0 text-muted">
+                تعداد محصولات:
+                    {% if is_paginated %}
+                    {{ page_obj.paginator.count }}
+                {% else %}
+                    {{ products|length }}
+                {% endif %}
+            </p>
+        </div>
+    </section>
+    <section>
+        <div class="row g-3 g-md-4">
+            {% for product in products %}
+                <div class="col-6 col-md-3">
+                    <a href="{% url 'shop:product_detail' product.slug %}"
+                       class="text-decoration-none text-light">
+                        <div class="product-card h-100">
+                            <div class="product-image-wrapper">
+                                {% with main_image=product.images.all.0 %}
+                                    {% if main_image %}
+                                        <img src="{{ main_image.image.url }}" alt="{{ product.name }}">
+                                    {% else %}
+                                        <img src="https://via.placeholder.com/400x400?text=No+Image" alt="{{ product.name }}">
+                                    {% endif %}
+                                {% endwith %}
+                                {% if product.is_featured %}
+                                    <div class="product-chip">ویژه</div>
                                 {% endif %}
                             </div>
+                            <div class="product-body">
+                                <div class="product-category">{{ product.category.name }}</div>
+                                <div class="product-name">{{ product.name }}</div>
+                                <div class="product-meta">
+                                    <span>{{ product.weight_gram }} گرم</span>
+                                    {% if product.wage_tier %}
+                                        <span>اجرت: {{ product.wage_tier.name }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="product-footer d-flex justify-content-between align-items-center">
+                                <span class="product-link">مشاهده جزئیات</span>
+                                <i class="bi bi-arrow-left-short"></i>
+                            </div>
                         </div>
-                        <div class="product-footer d-flex justify-content-between align-items-center">
-                            <span class="product-link">مشاهده جزئیات</span>
-                            <i class="bi bi-arrow-left-short"></i>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        {% empty %}
-            <p class="text-muted small">هنوز محصولی ثبت نشده است.</p>
-        {% endfor %}
-    </div>
-</section>
+                    </a>
+                </div>
+            {% empty %}
+                <p class="text-muted small">هنوز محصولی ثبت نشده است.</p>
+            {% endfor %}
+        </div>
+        {% if is_paginated %}
+            <nav aria-label="Page navigation" class="mt-3">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">قبلی</span></li>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">بعدی</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    </section>
 {% endblock %}

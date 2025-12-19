@@ -4,7 +4,6 @@
 {% block title %}نور گلد | گالری طلا{% endblock %}
 
 {% block content %}
-
     <!-- HERO -->
     <section class="mb-5">
         <div class="row align-items-center gy-4">
@@ -23,20 +22,18 @@
                     برای مشتریانی که جزئیات و کیفیت برایشان مهم است.
                 </p>
                 <div class="d-flex flex-wrap gap-2 justify-content-lg-start justify-content-center">
-                        <a href="{% url 'shop:product_list' %}" class="btn btn-gold px-4 py-2">
-                            مشاهده همه محصولات
-                        </a>
-                        <a href="#categories" class="btn btn-outline-gold px-4 py-2">
-                            دسته‌بندی‌ها
-                        </a>
-                    </div>
+                    <a href="{% url 'shop:product_list' %}" class="btn btn-gold px-4 py-2">
+                        مشاهده همه محصولات
+                    </a>
+                    <a href="#categories" class="btn btn-outline-gold px-4 py-2">
+                        دسته‌بندی‌ها
+                    </a>
+                </div>
             </div>
-
             <div class="col-lg-6">
                 <div class="hero-image-wrap">
                     <div class="hero-main-circle">
                         <div class="hero-glow"></div>
-
                         {% if hero_product and hero_product.images.all|first %}
                             {% with hero_img=hero_product.images.all|first %}
                                 <img src="{{ hero_img.image.url }}" alt="{{ hero_product.name }}">
@@ -51,26 +48,25 @@
                                 <span class="small">محصول ویژه</span>
                                 {% if hero_product.wage_tier %}
                                     <span class="badge rounded-pill">
-                    {{ hero_product.wage_tier.name }}
-                </span>
+                                        {{ hero_product.wage_tier.name }}
+                                    </span>
                                 {% endif %}
                             </div>
                             <p class="mb-0 small">
                                 {{ hero_product.name }}<br>
                                 <span class="small">
-                وزن تقریبی: {{ hero_product.weight_gram }} گرم
-            </span>
+                                    وزن تقریبی: {{ hero_product.weight_gram }} گرم
+                                </span>
                             </p>
                         </div>
                     {% endif %}
-
                 </div>
             </div>
         </div>
     </section>
 
     <!-- CATEGORIES -->
-    <section class="mb-4 mb-md-5">
+    <section id="categories" class="mb-4 mb-md-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="section-title mb-0">
                 دسته‌بندی‌ها
@@ -84,7 +80,6 @@
                        class="text-decoration-none text-light">
                         <div class="category-card h-100 d-flex align-items-center gap-3">
                             <div class="category-icon-wrap">
-                                <!-- آیکون ساده بر اساس اندیس -->
                                 {% if forloop.counter == 1 %}
                                     <i class="bi bi-circle"></i>
                                 {% elif forloop.counter == 2 %}
@@ -123,11 +118,10 @@
                 جدیدترین محصولات
                 <span>چند نمونه از گالری نور گلد</span>
             </h2>
-            <a href="#" class="small text-decoration-none" style="color: var(--gold);">
+            <a href="{% url 'shop:product_list' %}" class="small text-decoration-none" style="color: var(--gold);">
                 مشاهده همه
             </a>
         </div>
-
         <div class="row g-3 g-md-4">
             {% for product in latest_products %}
                 <div class="col-6 col-md-3">
@@ -144,7 +138,6 @@
                                              alt="{{ product.name }}">
                                     {% endif %}
                                 {% endwith %}
-
                                 {% if product.is_featured %}
                                     <div class="product-chip">ویژه</div>
                                 {% endif %}
@@ -175,5 +168,4 @@
             {% endfor %}
         </div>
     </section>
-
 {% endblock %}
